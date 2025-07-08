@@ -1,20 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>QuizMakerAi - Creador de Cuestionarios</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMakerAi | Crea Cuestionarios con IA o Manualmente</title>
     <style>
         :root {
             --negro: #0f0f1a;
             --azul: #3b82f6;
             --azul-hover: #2563eb;
+            --azul-claro: #93c5fd;
             --gris: #e5e7eb;
+            --error: #ef4444;
+            --success: #22c55e;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body {
@@ -22,23 +27,40 @@
             color: var(--gris);
             min-height: 100vh;
             padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
-            font-size: 2rem;
-            color: var(--azul);
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--azul), #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            color: var(--azul-claro);
         }
 
         /* Modos de Uso */
@@ -46,74 +68,297 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .modo-card {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modo-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(59, 130, 246, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .modo-card:hover {
             border-color: var(--azul);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .modo-card:hover::after {
+            opacity: 1;
+        }
+
+        .modo-card.active {
+            border-color: var(--azul);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .modo-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--azul);
+            transition: transform 0.3s ease;
+        }
+
+        .modo-card:hover .modo-icon {
+            transform: scale(1.1);
         }
 
         /* Formularios */
         .formulario {
             background: rgba(255, 255, 255, 0.05);
             padding: 2rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .formulario h3 {
+            margin-bottom: 1.5rem;
+            color: var(--azul);
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
         input[type="text"], 
         textarea {
             width: 100%;
-            padding: 0.8rem;
-            margin: 0.5rem 0;
+            padding: 0.9rem;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
             color: var(--gris);
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, 
+        textarea:focus {
+            outline: none;
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        input[type="text"].error, 
+        textarea.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+            position: absolute;
+            bottom: -1.2rem;
+            left: 0;
         }
 
         button {
             background: var(--azul);
             color: white;
-            padding: 0.8rem 1.5rem;
+            padding: 0.9rem 1.8rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         button:hover {
             background: var(--azul-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:disabled {
+            background: #1e40af;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
+        }
+
+        button .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        button.loading .spinner {
+            display: block;
+        }
+
+        button.loading span {
+            margin-left: 8px;
         }
 
         /* Preview */
         .preview {
             background: rgba(255, 255, 255, 0.05);
             padding: 2rem;
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .preview h3 {
+            margin-bottom: 1.5rem;
+            color: var(--azul);
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding-bottom: 0.5rem;
         }
 
         .quiz-item {
-            margin: 1rem 0;
+            margin: 1.5rem 0;
             padding: 1.5rem;
             background: rgba(59, 130, 246, 0.1);
             border-radius: 8px;
+            transition: transform 0.2s ease;
+            border-left: 4px solid var(--azul);
+        }
+
+        .quiz-item:hover {
+            transform: translateX(5px);
+        }
+
+        .quiz-item h4 {
+            margin-bottom: 1rem;
+            color: var(--gris);
+        }
+
+        .quiz-item ul {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .quiz-item li {
+            margin: 0.5rem 0;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .loading {
             text-align: center;
             color: var(--azul);
             padding: 2rem;
+            display: none;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--azul);
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Quiz Interactivo */
+        .quiz-interactive {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-counter {
+            color: var(--azul);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .option-button {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-button::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .option-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .option-button.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--success);
+        }
+
+        .option-button.correct::before {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        .option-button.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--error);
+        }
+
+        .option-button.incorrect::before {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.3);
         }
 
         /* Responsive */
@@ -121,54 +366,92 @@
             .modo-selector {
                 grid-template-columns: 1fr;
             }
+            
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <div class="logo">📚 QuizMakerAi</div>
-            <p>Genera cuestionarios con IA o manualmente</p>
+            <h1 class="logo">QuizMakerAi</h1>
+            <p class="subtitle">Crea cuestionarios profesionales con IA o manualmente</p>
         </header>
 
         <div class="modo-selector">
-            <div class="modo-card" onclick="mostrarModo('ia')">
+            <div class="modo-card" data-mode="ia">
+                <div class="modo-icon">🤖</div>
                 <h3>Modo IA</h3>
                 <p>Genera quizzes automáticamente</p>
             </div>
-            <div class="modo-card" onclick="mostrarModo('manual')">
+            <div class="modo-card" data-mode="manual">
+                <div class="modo-icon">✍️</div>
                 <h3>Modo Manual</h3>
                 <p>Crea quizzes personalizados</p>
             </div>
         </div>
 
         <!-- Modo IA -->
-        <div id="modo-ia" class="formulario" style="display: none;">
+        <div id="modo-ia" class="formulario">
             <h3>Generar con IA</h3>
-            <textarea id="texto-ia" rows="5" placeholder="Pega aquí el texto para generar el quiz..."></textarea>
-            <input type="file" id="documento" accept=".pdf,.docx,.txt" style="margin: 1rem 0;">
-            <button onclick="generarQuizIA()">Generar Quiz con IA</button>
-            <div id="ia-loading" class="loading" style="display: none;">Generando quiz...</div>
+            <div class="input-group">
+                <textarea id="texto-ia" rows="5" placeholder="Pega aquí el texto para generar el quiz..."></textarea>
+                <div class="error-message" id="error-ia-texto">Por favor ingresa un texto para generar el quiz</div>
+            </div>
+            <div class="input-group">
+                <input type="file" id="documento" accept=".pdf,.docx,.txt">
+                <div class="error-message" id="error-ia-file">Archivo no válido</div>
+            </div>
+            <button id="btn-ia" onclick="generarQuizIA()">
+                <span class="spinner"></span>
+                <span>Generar Quiz con IA</span>
+            </button>
+            <div class="loading" id="ia-loading">Generando quiz...</div>
         </div>
 
         <!-- Modo Manual -->
         <div id="modo-manual" class="formulario" style="display: none;">
             <h3>Crear Manualmente</h3>
-            <input type="text" id="pregunta" placeholder="Escribe la pregunta...">
-            <div id="opciones-container">
-                <input type="text" class="opcion" placeholder="Opción 1">
-                <input type="text" class="opcion" placeholder="Opción 2">
+            <div class="input-group">
+                <input type="text" id="pregunta" placeholder="Escribe la pregunta...">
+                <div class="error-message" id="error-pregunta">Por favor ingresa una pregunta</div>
             </div>
-            <button onclick="agregarOpcion()" style="margin: 1rem 0;">+ Añadir Opción</button>
-            <input type="text" id="respuesta-correcta" placeholder="Respuesta correcta (ej: Opción 1)">
-            <button onclick="agregarPregunta()">Guardar Pregunta</button>
+            <div id="opciones-container">
+                <div class="input-group">
+                    <input type="text" class="opcion" placeholder="Opción 1">
+                </div>
+                <div class="input-group">
+                    <input type="text" class="opcion" placeholder="Opción 2">
+                </div>
+            </div>
+            <button id="btn-opcion" onclick="agregarOpcion()" style="margin: 1rem 0;">
+                <span>+</span> Añadir Opción
+            </button>
+            <div class="input-group">
+                <input type="text" id="respuesta-correcta" placeholder="Respuesta correcta (ej: Opción 1)">
+                <div class="error-message" id="error-respuesta">Por favor ingresa la respuesta correcta</div>
+            </div>
+            <button id="btn-manual" onclick="agregarPregunta()">Guardar Pregunta</button>
         </div>
 
         <!-- Preview -->
         <div class="preview">
             <h3>Preview del Quiz</h3>
             <div id="quiz-preview"></div>
-            <button id="tomar-quiz" onclick="iniciarQuiz()" style="margin-top: 1rem; display: none;">Tomar Quiz</button>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button id="tomar-quiz" onclick="iniciarQuiz()" style="display: none; flex: 1;">
+                    <span>Tomar Quiz</span>
+                </button>
+                <button id="limpiar-quiz" onclick="limpiarQuiz()" style="display: none; flex: 1; background: #ef4444;">
+                    <span>Limpiar Quiz</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -176,6 +459,28 @@
         let preguntas = [];
         let quizActual = 0;
         let puntaje = 0;
+        const API_KEY = 'iXqEW0o1n2VNePwIfdarqRRyEJtZ-ESv_-AnsjEC7p4'; // Nueva API key
+        const CHATBOT_NAME = 'QuizMakerAI';
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Event listeners para modo selector
+            document.querySelectorAll('.modo-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const mode = card.dataset.mode;
+                    mostrarModo(mode);
+                    
+                    // Activar card
+                    document.querySelectorAll('.modo-card').forEach(c => 
+                        c.classList.remove('active'));
+                    card.classList.add('active');
+                });
+            });
+
+            // Validación en tiempo real para manual
+            document.getElementById('pregunta').addEventListener('input', validarPregunta);
+            document.getElementById('respuesta-correcta').addEventListener('input', validarRespuesta);
+        });
 
         // Mostrar modo seleccionado
         function mostrarModo(modo) {
@@ -185,25 +490,59 @@
                 modo === 'manual' ? 'block' : 'none';
         }
 
+        // Validar inputs en tiempo real
+        function validarPregunta() {
+            const input = document.getElementById('pregunta');
+            const error = document.getElementById('error-pregunta');
+            if(!input.value.trim()) {
+                input.classList.add('error');
+                error.style.display = 'block';
+                return false;
+            } else {
+                input.classList.remove('error');
+                error.style.display = 'none';
+                return true;
+            }
+        }
+
+        function validarRespuesta() {
+            const input = document.getElementById('respuesta-correcta');
+            const error = document.getElementById('error-respuesta');
+            if(!input.value.trim()) {
+                input.classList.add('error');
+                error.style.display = 'block';
+                return false;
+            } else {
+                input.classList.remove('error');
+                error.style.display = 'none';
+                return true;
+            }
+        }
+
         // Integración con Poe AI
         async function generarQuizIA() {
-            const texto = document.getElementById('texto-ia').value;
+            const texto = document.getElementById('texto-ia').value.trim();
             const loading = document.getElementById('ia-loading');
+            const btn = document.getElementById('btn-ia');
             
+            // Validar inputs
             if(!texto) {
-                alert('Por favor ingresa un texto para generar el quiz');
+                document.getElementById('error-ia-texto').style.display = 'block';
                 return;
             }
 
             try {
+                // Deshabilitar botón y mostrar loading
+                btn.disabled = true;
+                btn.classList.add('loading');
                 loading.style.display = 'block';
                 
                 // API call a Poe
-                const response = await fetch('https://poe.com/QuizMakerAI', {
+                const response = await fetch(`https://poe.com/${CHATBOT_NAME}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-API-Key': 'tfVql_G7vDF961RKQxkWSfeOnXULyppOyWUTGnuB6lg'
+                        'X-API-Key': API_KEY
                     },
                     body: JSON.stringify({
                         query: `Genera un quiz con 5 preguntas basadas en este texto: ${texto}. 
@@ -212,17 +551,25 @@
                     })
                 });
 
+                if(!response.ok) throw new Error(`Error API: ${response.status}`);
+                
                 const data = await response.json();
                 
                 if(data && data.length) {
                     preguntas = data;
                     renderizarPreview();
                     document.getElementById('tomar-quiz').style.display = 'block';
+                    document.getElementById('limpiar-quiz').style.display = 'block';
+                    alert('¡Quiz generado con éxito!');
+                } else {
+                    throw new Error('Respuesta inválida de la API');
                 }
             } catch(error) {
                 console.error('Error:', error);
-                alert('Error al generar el quiz. Verifica la API key y el chatbot');
+                alert(`Error al generar el quiz: ${error.message}. Verifica la API key y el chatbot.`);
             } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
                 loading.style.display = 'none';
             }
         }
@@ -230,46 +577,67 @@
         // Funciones de modo manual
         function agregarOpcion() {
             const container = document.getElementById('opciones-container');
-            const newInput = document.createElement('input');
-            newInput.type = 'text';
-            newInput.className = 'opcion';
-            newInput.placeholder = `Opción ${container.children.length + 1}`;
+            const newInput = document.createElement('div');
+            newInput.className = 'input-group';
+            newInput.innerHTML = `
+                <input type="text" class="opcion" placeholder="Opción ${container.children.length + 1}">
+            `;
             container.appendChild(newInput);
         }
 
         function agregarPregunta() {
-            const pregunta = document.getElementById('pregunta').value;
+            // Validar inputs
+            const preguntaValida = validarPregunta();
             const opciones = Array.from(document.getElementsByClassName('opcion'))
-                                  .map(op => op.value);
-            const respuesta = document.getElementById('respuesta-correcta').value;
+                                  .map(op => op.value.trim());
+            const respuestaValida = validarRespuesta();
             
-            if(pregunta && opciones.length >= 2 && respuesta) {
-                preguntas.push({ pregunta, opciones, respuesta });
-                renderizarPreview();
-                document.getElementById('tomar-quiz').style.display = 'block';
-                // Limpiar formulario
-                document.getElementById('pregunta').value = '';
-                document.querySelectorAll('.opcion').forEach(op => op.value = '');
-                document.getElementById('respuesta-correcta').value = '';
+            if(!preguntaValida || opciones.some(op => !op) || !respuestaValida) return;
+
+            const pregunta = document.getElementById('pregunta').value.trim();
+            const respuesta = document.getElementById('respuesta-correcta').value.trim();
+            
+            // Verificar que la respuesta coincida con alguna opción
+            if(!opciones.includes(respuesta)) {
+                alert('La respuesta correcta debe coincidir con una de las opciones');
+                return;
             }
+
+            // Agregar y limpiar
+            preguntas.push({ pregunta, opciones, respuesta });
+            renderizarPreview();
+            document.getElementById('tomar-quiz').style.display = 'block';
+            document.getElementById('limpiar-quiz').style.display = 'block';
+            
+            // Limpiar formulario
+            document.getElementById('pregunta').value = '';
+            document.querySelectorAll('.opcion').forEach(op => op.value = '');
+            document.getElementById('respuesta-correcta').value = '';
         }
 
         // Renderizar preview
         function renderizarPreview() {
             const preview = document.getElementById('quiz-preview');
-            preview.innerHTML = preguntas.map((q, i) => `
-                <div class="quiz-item">
-                    <h4>Pregunta ${i+1}: ${q.pregunta}</h4>
-                    <ul>
-                        ${q.opciones.map(op => `<li>• ${op}</li>`).join('')}
-                    </ul>
-                    <p><strong>Respuesta correcta:</strong> ${q.respuesta}</p>
-                </div>
-            `).join('');
+            preview.innerHTML = preguntas.length ? 
+                preguntas.map((q, i) => `
+                    <div class="quiz-item">
+                        <h4>Pregunta ${i+1}: ${q.pregunta}</h4>
+                        <ul>
+                            ${q.opciones.map(op => `<li>• ${op}</li>`).join('')}
+                        </ul>
+                        <p><strong>Respuesta correcta:</strong> ${q.respuesta}</p>
+                    </div>
+                `).join('') : 
+                '<p style="color: var(--gris);">No hay preguntas aún. Crea una manualmente o genera con IA.</p>';
         }
 
         // Sistema de quiz interactivo
         function iniciarQuiz() {
+            if(!preguntas.length) {
+                alert('No hay preguntas para el quiz. Crea una manualmente o genera con IA.');
+                return;
+            }
+            
             quizActual = 0;
             puntaje = 0;
             mostrarPregunta();
@@ -285,36 +653,55 @@
             const preview = document.getElementById('quiz-preview');
             
             preview.innerHTML = `
-                <div class="quiz-item">
-                    <h3>Pregunta ${quizActual+1}/${preguntas.length}</h3>
-                    <h4>${pregunta.pregunta}</h4>
-                    <div style="margin: 1rem 0;">
+                <div class="quiz-interactive">
+                    <div class="question-counter">Pregunta ${quizActual+1}/${preguntas.length}</div>
+                    <h4 class="question-text">${pregunta.pregunta}</h4>
+                    <div>
                         ${pregunta.opciones.map((op, idx) => `
-                            <div style="margin: 0.5rem 0;">
-                                <button onclick="verificarRespuesta(${idx})" 
-                                        style="width: 100%; text-align: left; padding: 1rem;">
-                                    ${op}
-                                </button>
-                            </div>
+                            <button class="option-button" onclick="verificarRespuesta(${idx})">
+                                ${op}
+                            </button>
                         `).join('')}
                     </div>
                 </div>
             `;
         }
 
-        function verificarRespuesta(opcionElegida) {
+        function verificarRespuesta(opcionElegido) {
             const respuestaCorrecta = preguntas[quizActual].respuesta;
             const opciones = preguntas[quizActual].opciones;
+            const buttons = document.querySelectorAll('.option-button');
             
-            if(opciones[opcionElegida] === respuestaCorrecta) {
+            // Marcar respuesta
+            buttons.forEach((btn, idx) => {
+                if(idx === opcionElegido) {
+                    btn.classList.add(opciones[idx] === respuestaCorrecta ? 'correct' : 'incorrect');
+                } else if(opciones[idx] === respuestaCorrecta) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            // Actualizar puntaje
+            if(opciones[opcionElegido] === respuestaCorrecta) {
                 puntaje++;
-                alert('¡Correcto! 🎉');
-            } else {
-                alert(`Incorrecto. La respuesta era: ${respuestaCorrecta}`);
             }
-            
-            quizActual++;
-            mostrarPregunta();
+
+            // Siguiente pregunta
+            setTimeout(() => {
+                quizActual++;
+                mostrarPregunta();
+            }, 1500);
+        }
+
+        // Limpiar quiz
+        function limpiarQuiz() {
+            if(confirm('¿Estás seguro de que deseas limpiar todas las preguntas?')) {
+                preguntas = [];
+                renderizarPreview();
+                document.getElementById('tomar-quiz').style.display = 'none';
+                document.getElementById('limpiar-quiz').style.display = 'none';
+                alert('Quiz limpiado correctamente');
+            }
         }
     </script>
 </body>
