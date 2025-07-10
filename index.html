@@ -80,10 +80,9 @@
         }
 
         .container {
-            width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
+            width: 100%;
+            margin-top: 80px; /* Espacio para la navbar */
         }
 
         /* Navegación */
@@ -394,7 +393,6 @@
             background: var(--surface);
             padding: var(--spacing-xl);
             border-radius: 16px;
-            margin-bottom: var(--spacing-lg);
             box-shadow: var(--shadow-md);
             border: 1px solid var(--border);
         }
@@ -405,112 +403,199 @@
             font-size: 1.8rem;
             border-bottom: 2px solid var(--border);
             padding-bottom: var(--spacing-sm);
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background: var(--primary);
+            margin-right: var(--spacing-sm);
+            border-radius: 4px;
         }
 
         .input-group {
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
             position: relative;
         }
 
+        .input-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
         input[type="text"], 
-        textarea,
-        input[type="file"] {
+        input[type="number"],
+        select {
             width: 100%;
             padding: var(--spacing-sm) var(--spacing-md);
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border);
             color: var(--text);
-            border-radius: 10px;
-            font-size: 1.05rem;
+            border-radius: 8px;
+            font-size: 1rem;
             transition: all 0.2s ease;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            padding-right: 36px;
         }
 
         input[type="file"] {
             padding: var(--spacing-xs) var(--spacing-sm);
             cursor: pointer;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 0.8rem;
+            transition: all 0.2s ease;
         }
 
-        input[type="text"]:focus, 
-        textarea:focus,
         input[type="file"]:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
-
-        input[type="text"].error, 
-        textarea.error {
-            border-color: var(--error);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        
+        input:focus, 
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
-        .error-message {
+        .question-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .difficulty-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .difficulty-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .options-section {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-subtitle {
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-light);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-subtitle::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background: var(--primary);
+            margin-right: var(--spacing-xs);
+            border-radius: 2px;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .delete-option {
+            background: rgba(239, 68, 68, 0.2);
             color: var(--error);
-            font-size: 0.95rem;
-            margin-top: var(--spacing-xs);
-            display: none;
-            position: absolute;
-            bottom: -1.5rem;
-            left: 0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .button-group {
+        .delete-option:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .correct-answer {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .advanced-settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-actions {
             display: flex;
             gap: var(--spacing-md);
             margin-top: var(--spacing-lg);
         }
 
-        button {
+        .primary-btn {
             background: var(--primary);
             color: white;
             padding: var(--spacing-sm) var(--spacing-lg);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: 600;
-            font-size: 1.05rem;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-md);
+            gap: var(--spacing-xs);
         }
 
-        button:hover {
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .primary-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
         }
 
-        button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            background: var(--primary-dark);
-            cursor: not-allowed;
-            transform: none;
-            opacity: 0.7;
-        }
-
-        button .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-
-        button.loading .spinner {
-            display: block;
-        }
-
-        button.loading span {
-            margin-left: 10px;
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
 
         /* Preview Section */
@@ -753,27 +838,18 @@
                 padding: var(--spacing-lg);
             }
             
-            .info-grid {
+            .about-contact-content {
                 grid-template-columns: 1fr;
-            }
-            
-            .footer-container {
-                flex-direction: column;
-                gap: var(--spacing-md);
-                text-align: center;
             }
         }
     </style>
 </head>
 <body>
     <div class="page-wrapper">
-        <!-- Navegación -->
+        <!-- Barra de Navegación -->
         <nav class="navbar">
             <div class="nav-container">
-                <div class="logo">
-                    <span class="logo-icon">📚</span>
-                    QuizMakerAI
-                </div>
+                <div class="nav-logo">QuizMakerAI</div>
                 <ul class="nav-links">
                     <li><a href="#hero" class="nav-link active">Inicio</a></li>
                     <li><a href="#about" class="nav-link">Acerca de</a></li>
@@ -794,9 +870,9 @@
                 </a>
             </section>
 
-            <!-- About Section -->
+            <!-- Acerca de -->
             <section id="about" class="info-section">
-                <h2 class="section-title">¿Qué es QuizMakerAI?</h2>
+                <h2 class="section-title">Acerca de QuizMakerAI</h2>
                 <div class="info-grid">
                     <div class="info-card">
                         <h3>Innovación Educativa</h3>
@@ -805,26 +881,17 @@
                     </div>
                     <div class="info-card">
                         <h3>Características</h3>
-                        <ul>
+                        <ul style="margin: 1rem 0 0 1.5rem; line-height: 1.6;">
                             <li>Generación automática de preguntas con IA</li>
                             <li>Creación manual de quizzes personalizados</li>
                             <li>Formato interactivo para estudiantes</li>
                             <li>Ideal para evaluaciones y refuerzo de conceptos</li>
                         </ul>
                     </div>
-                    <div class="info-card">
-                        <h3>Beneficios</h3>
-                        <ul>
-                            <li>Aumenta el engagement en el aula</li>
-                            <li>Facilita la evaluación del aprendizaje</li>
-                            <li>Permite adaptar el contenido a cada clase</li>
-                            <li>Tecnología accesible para todos los educadores</li>
-                        </ul>
-                    </div>
                 </div>
             </section>
 
-            <!-- Contact Section -->
+            <!-- Contacto -->
             <section id="contact" class="contact-section">
                 <h2 class="contact-title">Contacto</h2>
                 <div class="contact-container">
@@ -879,33 +946,94 @@
                     </div>
                 </div>
 
-                <!-- Modo Manual -->
+                <!-- Modo Manual Mejorado -->
                 <div id="modo-manual" class="form-section" style="display: none;">
                     <div class="form-container">
-                        <h3 class="form-title">Crear Manualmente</h3>
+                        <h3 class="form-title">Crear Pregunta Manual</h3>
+                        
+                        <!-- Encabezado de la pregunta -->
                         <div class="input-group">
-                            <input type="text" id="pregunta" placeholder="Escribe la pregunta...">
+                            <label for="pregunta" class="input-label">Pregunta</label>
+                            <input type="text" id="pregunta" placeholder="Escribe la pregunta completa...">
                             <div class="error-message" id="error-pregunta">Por favor ingresa una pregunta</div>
                         </div>
-                        <div id="opciones-container">
+
+                        <!-- Metadata de la pregunta -->
+                        <div class="question-meta">
                             <div class="input-group">
-                                <input type="text" class="opcion" placeholder="Opción 1">
+                                <label for="categoria" class="input-label">Categoría</label>
+                                <select id="categoria">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="matematicas">Matemáticas</option>
+                                    <option value="historia">Historia</option>
+                                    <option value="ciencia">Ciencia</option>
+                                    <option value="literatura">Literatura</option>
+                                </select>
                             </div>
+
                             <div class="input-group">
-                                <input type="text" class="opcion" placeholder="Opción 2">
+                                <label for="dificultad" class="input-label">Dificultad</label>
+                                <div class="difficulty-selector">
+                                    <button class="difficulty-btn active" data-level="facil">★</button>
+                                    <button class="difficulty-btn" data-level="medio">★★</button>
+                                    <button class="difficulty-btn" data-level="dificil">★★★</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="button-group">
-                            <button id="btn-opcion" onclick="agregarOpcion()" style="background: var(--accent);">
-                                <span>+</span> Añadir Opción
+
+                        <!-- Opciones de respuesta -->
+                        <div class="options-section">
+                            <h4 class="section-subtitle">Opciones de Respuesta</h4>
+                            <div id="opciones-container">
+                                <div class="input-group option-group">
+                                    <input type="text" class="opcion" placeholder="Opción 1">
+                                    <button class="delete-option" onclick="eliminarOpcion(this)">×</button>
+                                </div>
+                                <div class="input-group option-group">
+                                    <input type="text" class="opcion" placeholder="Opción 2">
+                                    <button class="delete-option" onclick="eliminarOpcion(this)">×</button>
+                                </div>
+                            </div>
+                            
+                            <div class="button-group">
+                                <button id="btn-opcion" onclick="agregarOpcion()" class="secondary-btn">
+                                    <i class="fas fa-plus"></i> Añadir Opción
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Selección de respuesta correcta -->
+                        <div class="correct-answer">
+                            <h4 class="section-subtitle">Respuesta Correcta</h4>
+                            <div class="input-group">
+                                <select id="respuesta-select">
+                                    <option value="">Seleccionar respuesta...</option>
+                                </select>
+                                <div class="error-message" id="error-respuesta">Por favor selecciona una respuesta</div>
+                            </div>
+                        </div>
+
+                        <!-- Configuraciones adicionales -->
+                        <div class="advanced-settings">
+                            <div class="input-group">
+                                <label for="tiempo" class="input-label">Tiempo límite (segundos)</label>
+                                <input type="number" id="tiempo" min="10" max="300" placeholder="30">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="puntos" class="input-label">Puntos</label>
+                                <input type="number" id="puntos" min="1" max="10" placeholder="5">
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="form-actions">
+                            <button id="btn-manual" onclick="agregarPregunta()" class="primary-btn">
+                                <i class="fas fa-save"></i> Guardar Pregunta
                             </button>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="respuesta-correcta" placeholder="Respuesta correcta (ej: Opción 1)">
-                            <div class="error-message" id="error-respuesta">Por favor ingresa la respuesta correcta</div>
-                        </div>
-                        <div class="button-group">
-                            <button id="btn-manual" onclick="agregarPregunta()">Guardar Pregunta</button>
+                            <button onclick="limpiarFormulario()" class="secondary-btn">
+                                <i class="fas fa-eraser"></i> Limpiar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -951,6 +1079,23 @@
         const API_KEY = '0Oz56uebbgJcf6ebtzCSHd0E_gEE0sWQ19bFHLjTRgw';
         const CHATBOT_NAME = 'QuizMakerAl';
 
+        // Función para actualizar el selector de respuestas
+        function actualizarSelectorRespuestas() {
+            const select = document.getElementById('respuesta-select');
+            const opciones = document.querySelectorAll('.opcion');
+            
+            // Limpiar opciones
+            select.innerHTML = '<option value="">Seleccionar respuesta...</option>';
+            
+            // Agregar opciones
+            opciones.forEach((opcion, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = opcion.value || `Opción ${index + 1}`;
+                select.appendChild(option);
+            });
+        }
+
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             // Smooth scroll para links de la navbar
@@ -978,10 +1123,26 @@
 
             // Validación en tiempo real para manual
             document.getElementById('pregunta').addEventListener('input', validarPregunta);
-            document.getElementById('respuesta-correcta').addEventListener('input', validarRespuesta);
+            document.getElementById('respuesta-select').addEventListener('change', validarRespuestaSelect);
             
-            // Manejar upload de archivos
-            document.getElementById('file-input').addEventListener('change', handleFileUpload);
+            // Inicializar selector de respuestas
+            actualizarSelectorRespuestas();
+            
+            // Event listeners para selector de dificultad
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-btn').forEach(b => 
+                        b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Actualizar selector al cambiar opciones
+            const observer = new MutationObserver(actualizarSelectorRespuestas);
+            observer.observe(document.getElementById('opciones-container'), { 
+                childList: true, 
+                subtree: true 
+            });
         });
 
         // Mostrar modo seleccionado
@@ -1007,15 +1168,15 @@
             }
         }
 
-        function validarRespuesta() {
-            const input = document.getElementById('respuesta-correcta');
+        function validarRespuestaSelect() {
+            const select = document.getElementById('respuesta-select');
             const error = document.getElementById('error-respuesta');
-            if(!input.value.trim()) {
-                input.classList.add('error');
+            if(select.value === '') {
+                select.classList.add('error');
                 error.style.display = 'block';
                 return false;
             } else {
-                input.classList.remove('error');
+                select.classList.remove('error');
                 error.style.display = 'none';
                 return true;
             }
@@ -1084,41 +1245,70 @@
         function agregarOpcion() {
             const container = document.getElementById('opciones-container');
             const newInput = document.createElement('div');
-            newInput.className = 'input-group';
+            newInput.className = 'input-group option-group';
             newInput.innerHTML = `
                 <input type="text" class="opcion" placeholder="Opción ${container.children.length + 1}">
+                <button class="delete-option" onclick="eliminarOpcion(this)">×</button>
             `;
             container.appendChild(newInput);
+            
+            // Actualizar selector de respuestas
+            actualizarSelectorRespuestas();
         }
 
+        // Función para eliminar opción
+        function eliminarOpcion(btn) {
+            btn.parentElement.remove();
+            actualizarSelectorRespuestas();
+        }
+
+        // Función para limpiar formulario
+        function limpiarFormulario() {
+            document.getElementById('pregunta').value = '';
+            document.querySelectorAll('.opcion').forEach(op => op.value = '');
+            document.getElementById('categoria').value = '';
+            document.querySelectorAll('.difficulty-btn').forEach(btn => 
+                btn.classList.remove('active'));
+            document.querySelector('.difficulty-btn[data-level="facil"]').classList.add('active');
+            document.getElementById('tiempo').value = '';
+            document.getElementById('puntos').value = '';
+            actualizarSelectorRespuestas();
+        }
+
+        // Modificar la función agregarPregunta
         function agregarPregunta() {
             // Validar inputs
             const preguntaValida = validarPregunta();
             const opciones = Array.from(document.getElementsByClassName('opcion'))
                                   .map(op => op.value.trim());
-            const respuestaValida = validarRespuesta();
+            const respuestaValida = document.getElementById('respuesta-select').value !== '';
             
             if(!preguntaValida || opciones.some(op => !op) || !respuestaValida) return;
 
             const pregunta = document.getElementById('pregunta').value.trim();
-            const respuesta = document.getElementById('respuesta-correcta').value.trim();
+            const respuestaIndex = parseInt(document.getElementById('respuesta-select').value);
+            const respuesta = opciones[respuestaIndex];
             
-            // Verificar que la respuesta coincida con alguna opción
-            if(!opciones.includes(respuesta)) {
-                alert('La respuesta correcta debe coincidir con una de las opciones');
-                return;
-            }
-
+            // Obtener metadata
+            const categoria = document.getElementById('categoria').value;
+            const dificultad = document.querySelector('.difficulty-btn.active').dataset.level;
+            const tiempo = document.getElementById('tiempo').value || 30;
+            const puntos = document.getElementById('puntos').value || 5;
+            
             // Agregar y limpiar
-            preguntas.push({ pregunta, opciones, respuesta });
+            preguntas.push({ 
+                pregunta, 
+                opciones, 
+                respuesta,
+                metadata: { categoria, dificultad, tiempo, puntos }
+            });
+            
             renderizarPreview();
             document.getElementById('tomar-quiz').style.display = 'block';
             document.getElementById('limpiar-quiz').style.display = 'block';
             
             // Limpiar formulario
-            document.getElementById('pregunta').value = '';
-            document.querySelectorAll('.opcion').forEach(op => op.value = '');
-            document.getElementById('respuesta-correcta').value = '';
+            limpiarFormulario();
         }
 
         // Renderizar preview
@@ -1132,6 +1322,10 @@
                             ${q.opciones.map(op => `<li>• ${op}</li>`).join('')}
                         </ul>
                         <p><strong>Respuesta correcta:</strong> ${q.respuesta}</p>
+                        ${q.metadata ? `
+                            <p><strong>Categoría:</strong> ${q.metadata.categoria || 'Sin categoría'}</p>
+                            <p><strong>Dificultad:</strong> ${q.metadata.dificultad || 'Fácil'}</p>
+                        ` : ''}
                     </div>
                 `).join('') : 
                 '<p style="color: var(--gris);">No hay preguntas aún. Crea una manualmente o genera con IA.</p>';
