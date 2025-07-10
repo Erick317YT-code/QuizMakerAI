@@ -80,9 +80,10 @@
         }
 
         .container {
-            max-width: 1200px;
             width: 100%;
-            margin-top: 80px; /* Espacio para la navbar */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
         }
 
         /* Navegación */
@@ -268,7 +269,7 @@
             padding: var(--spacing-xl);
             margin-bottom: var(--spacing-xl);
             border: 1px solid var(--border);
-            text-align: center;
+                text-align: center;
             box-shadow: var(--shadow-md);
         }
 
@@ -599,7 +600,7 @@
         }
 
         /* Preview Section */
-        .preview-section {
+                .preview-section {
             margin-bottom: var(--spacing-xl);
         }
 
@@ -618,6 +619,15 @@
             border-bottom: 2px solid var(--border);
             padding-bottom: var(--spacing-sm);
             font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-title span {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 400;
         }
 
         .quiz-item {
@@ -838,18 +848,27 @@
                 padding: var(--spacing-lg);
             }
             
-            .about-contact-content {
+            .info-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
     <div class="page-wrapper">
-        <!-- Barra de Navegación -->
+        <!-- Navegación -->
         <nav class="navbar">
             <div class="nav-container">
-                <div class="nav-logo">QuizMakerAI</div>
+                <div class="logo">
+                    <span class="logo-icon">📚</span>
+                    QuizMakerAI
+                </div>
                 <ul class="nav-links">
                     <li><a href="#hero" class="nav-link active">Inicio</a></li>
                     <li><a href="#about" class="nav-link">Acerca de</a></li>
@@ -870,9 +889,9 @@
                 </a>
             </section>
 
-            <!-- Acerca de -->
+            <!-- About Section -->
             <section id="about" class="info-section">
-                <h2 class="section-title">Acerca de QuizMakerAI</h2>
+                <h2 class="section-title">¿Qué es QuizMakerAI?</h2>
                 <div class="info-grid">
                     <div class="info-card">
                         <h3>Innovación Educativa</h3>
@@ -891,7 +910,7 @@
                 </div>
             </section>
 
-            <!-- Contacto -->
+            <!-- Contact Section -->
             <section id="contact" class="contact-section">
                 <h2 class="contact-title">Contacto</h2>
                 <div class="contact-container">
@@ -1042,7 +1061,10 @@
             <!-- Preview Section -->
             <section id="preview" class="preview-section">
                 <div class="preview-container">
-                    <h3 class="preview-title">Preview del Quiz</h3>
+                    <h3 class="preview-title">
+                        Preview del Quiz
+                        <span id="question-count">0 preguntas</span>
+                    </h3>
                     <div id="quiz-preview"></div>
                     <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                         <button id="tomar-quiz" onclick="iniciarQuiz()" style="display: none; flex: 1;">
@@ -1072,7 +1094,7 @@
     </div>
 
     <script>
-        // El JavaScript se mantiene igual que en la respuesta anterior
+        // Variables globales
         let preguntas = [];
         let quizActual = 0;
         let puntaje = 0;
@@ -1094,6 +1116,14 @@
                 option.textContent = opcion.value || `Opción ${index + 1}`;
                 select.appendChild(option);
             });
+        }
+
+        // Función para actualizar contador de preguntas
+        function actualizarContadorPreguntas() {
+            const contador = document.getElementById('question-count');
+            if (contador) {
+                contador.textContent = `${preguntas.length} ${preguntas.length === 1 ? 'pregunta' : 'preguntas'}`;
+            }
         }
 
         // Inicializar
@@ -1123,7 +1153,7 @@
 
             // Validación en tiempo real para manual
             document.getElementById('pregunta').addEventListener('input', validarPregunta);
-            document.getElementById('respuesta-select').addEventListener('change', validarRespuestaSelect);
+            document.getElementById('respuesta-select').addEventSelectorRespuestas();
             
             // Inicializar selector de respuestas
             actualizarSelectorRespuestas();
@@ -1143,6 +1173,9 @@
                 childList: true, 
                 subtree: true 
             });
+            
+            // Inicializar contador de preguntas
+            actualizarContadorPreguntas();
         });
 
         // Mostrar modo seleccionado
@@ -1224,6 +1257,7 @@
                 if (data && data.length) {
                     preguntas = data;
                     renderizarPreview();
+                    actualizarContadorPreguntas();
                     document.getElementById('tomar-quiz').style.display = 'block';
                     document.getElementById('limpiar-quiz').style.display = 'block';
                     alert('¡Quiz generado con éxito!');
@@ -1240,7 +1274,6 @@
             }
         }
 
-        // El resto del JavaScript se mantiene igual
         // Funciones de modo manual
         function agregarOpcion() {
             const container = document.getElementById('opciones-container');
@@ -1275,7 +1308,7 @@
             actualizarSelectorRespuestas();
         }
 
-        // Modificar la función agregarPregunta
+        // Modificar la función agregarPregunta para permitir múltiples preguntas
         function agregarPregunta() {
             // Validar inputs
             const preguntaValida = validarPregunta();
@@ -1295,7 +1328,7 @@
             const tiempo = document.getElementById('tiempo').value || 30;
             const puntos = document.getElementById('puntos').value || 5;
             
-            // Agregar y limpiar
+            // Agregar pregunta al array y actualizar preview
             preguntas.push({ 
                 pregunta, 
                 opciones, 
@@ -1304,11 +1337,17 @@
             });
             
             renderizarPreview();
+            actualizarContadorPreguntas();
+            
+            // Mostrar botones de tomar quiz y limpiar
             document.getElementById('tomar-quiz').style.display = 'block';
             document.getElementById('limpiar-quiz').style.display = 'block';
             
-            // Limpiar formulario
+            // Limpiar formulario para nueva pregunta
             limpiarFormulario();
+            
+            // Mostrar mensaje de confirmación
+            alert(`Pregunta agregada correctamente. Total: ${preguntas.length} preguntas.`);
         }
 
         // Renderizar preview
@@ -1398,6 +1437,7 @@
             if(confirm('¿Estás seguro de que deseas limpiar todas las preguntas?')) {
                 preguntas = [];
                 renderizarPreview();
+                actualizarContadorPreguntas();
                 document.getElementById('tomar-quiz').style.display = 'none';
                 document.getElementById('limpiar-quiz').style.display = 'none';
                 alert('Quiz limpiado correctamente');
